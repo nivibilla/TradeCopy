@@ -86,12 +86,12 @@ for single_date in (dateF + datetime.timedelta(n) for n in range(numberofdays)):
 			df = pd.read_csv(filepath)
 			for i in range(0, len(df.index)):
 				df.iat[i, 10] = single_date.strftime("%Y%m%d")
-				if not os.path.exists("C:/Tradecopy/Data/PROCESSED/NSE-EOD/" + day+month+year + ".txt"):
+				if not os.path.exists("C:/Tradecopy/Data/PROCESSED/NSE-EOD/NSE_" + single_date.strftime("%Y%m%d") + ".txt"):
 					df.iloc[[i], [0, 10, 2, 3, 4, 5, 8]].to_csv(
-						"C:/Tradecopy/Data/PROCESSED/NSE-EOD/" + day+month+year + ".txt", header=False, index=False)
+						"C:/Tradecopy/Data/PROCESSED/NSE-EOD/NSE_" + single_date.strftime("%Y%m%d") + ".txt", header=False, index=False)
 				else:
 					df.iloc[[i], [0, 10, 2, 3, 4, 5, 8]].to_csv(
-						"C:/Tradecopy/Data/PROCESSED/NSE-EOD/" + day+month+year + ".txt", mode="a", header=False, index=False)
+						"C:/Tradecopy/Data/PROCESSED/NSE-EOD/NSE_" + single_date.strftime("%Y%m%d") + ".txt", mode="a", header=False, index=False)
 		except requests.exceptions.Timeout:
 			print("Url does not exist skipping date: " + day + month + year)
 			continue
