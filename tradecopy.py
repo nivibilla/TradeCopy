@@ -112,11 +112,13 @@ while True:
 		for root, dirs, files in os.walk("C:/Tradecopy/Data/RAW/NSE-EOD/"):
 			for file in files:
 				if file.endswith(".csv"):
-					paths.append(root + "/" + file)
+					pat = root + "/" + file
+					paths.append([pat, datetime.datetime.strptime(pat[37:46], "%d%b%Y")])
+		paths.sort(key=lambda x: x[1])
 		for filepath in paths:
-			single_date = datetime.datetime.strptime(filepath[37:46], "%d%b%Y")
-			print("Processing " + filepath)
-			df = pd.read_csv(filepath)
+			single_date = datetime.datetime.strptime(filepath[0][37:46], "%d%b%Y")
+			print("Processing " + filepath[0])
+			df = pd.read_csv(filepath[0])
 			for i in range(0, len(df.index)):
 				df.iat[i, 10] = single_date.strftime("%y%m%d")
 				if not os.path.exists("C:/Tradecopy/Data/PROCESSED/NSE-EOD-ASCII/" + df.iat[i, 0] + ".txt"):
@@ -132,14 +134,16 @@ while True:
 		for root, dirs, files in os.walk("C:/Tradecopy/Data/RAW/NSE-EOD/"):
 			for file in files:
 				if file.endswith(".csv"):
-					paths.append(root + "/" + file)
+					pat = root + "/" + file
+					paths.append([pat, datetime.datetime.strptime(pat[37:46], "%d%b%Y")])
+		paths.sort(key=lambda x: x[1])
 		for filepath in paths:
-			single_date = datetime.datetime.strptime(filepath[37:46], "%d%b%Y")
+			single_date = datetime.datetime.strptime(filepath[0][37:46], "%d%b%Y")
 			if os.path.exists("C:/Tradecopy/Data/PROCESSED/NSE-EOD/NSE_" + single_date.strftime("%Y%m%d") + ".txt"):
 				print("File already exists: " + "NSE_" + single_date.strftime("%Y%m%d") + ".txt")
 			else:
-				print("Processing " + filepath)
-				df = pd.read_csv(filepath)
+				print("Processing " + filepath[0])
+				df = pd.read_csv(filepath[0])
 				for i in range(0, len(df.index)):
 					df.iat[i, 10] = single_date.strftime("%Y%m%d")
 					if not os.path.exists(
