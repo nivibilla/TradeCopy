@@ -119,9 +119,9 @@ while True:
 			df = pd.read_csv(filepath)
 			for i in range(0, len(df.index)):
 				df.iat[i, 10] = single_date.strftime("%y%m%d")
-				if not os.path.exists("C:/Tradecopy/Data/PROCESSED/NSE-EOD/" + df.iat[i, 0] + ".csv"):
+				if not os.path.exists("C:/Tradecopy/Data/PROCESSED/NSE-EOD-ASCII/" + df.iat[i, 0] + ".txt"):
 					df.iloc[[i], [0, 10, 2, 3, 4, 5, 8]].to_csv(
-						"C:/Tradecopy/Data/PROCESSED/NSE-EOD-ASCII/" + df.iat[i, 0] + ".txt", header=True, index=False)
+						"C:/Tradecopy/Data/PROCESSED/NSE-EOD-ASCII/" + df.iat[i, 0] + ".txt", header=False, index=False)
 				else:
 					df.iloc[[i], [0, 10, 2, 3, 4, 5, 8]].to_csv(
 						"C:/Tradecopy/Data/PROCESSED/NSE-EOD-ASCII/" + df.iat[i, 0] + ".txt", mode="a", header=False,
