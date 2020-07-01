@@ -22,6 +22,10 @@ Path("C:/Tradecopy/Data/FTSE/").mkdir(parents=True, exist_ok=True)
 Path("C:/Tradecopy/Data/DOW/").mkdir(parents=True, exist_ok=True)
 
 while True:
+	dateFVal = False
+	dateTVal = False
+	validDates = False
+	rejected = False
 	choice = input(
 		"type 1 for tradecopy(create data), 2 for tradeASCII(Existing data), 3 for tradecopy(using existing data), "
 		"4 for FTSE data, 5 for FOREX, 6 for DOW or 'quit': ")
@@ -97,6 +101,7 @@ while True:
 						zip_ref.extractall("C:/Tradecopy/Data/RAW/NSE-EOD/" + year + "/")
 					os.remove(filepath + ".zip")
 					df = pd.read_csv(filepath)
+					df = df.drop(df[df.SERIES != "EQ"].index)
 					for i in range(0, len(df.index)):
 						df.iat[i, 10] = single_date.strftime("%Y%m%d")
 						if not os.path.exists(
