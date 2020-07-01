@@ -120,28 +120,57 @@ while True:
 				print("File already exists, date = " + day + month + year)
 
 	elif choice == "2":
-		paths = []
-		for root, dirs, files in os.walk("C:/Tradecopy/Data/RAW/NSE-EOD/"):
-			for file in files:
-				if file.endswith(".csv"):
-					pat = root + "/" + file
-					paths.append([pat, datetime.datetime.strptime(pat[37:46], "%d%b%Y")])
-		paths.sort(key=lambda x: x[1])
-		for filepath in paths:
-			single_date = datetime.datetime.strptime(filepath[0][37:46], "%d%b%Y")
-			print("Processing " + filepath[0])
-			df = pd.read_csv(filepath[0])
-			for i in range(0, len(df.index)):
-				df.iat[i, 10] = single_date.strftime("%d-%m-%y")
-				if not os.path.exists("C:/Tradecopy/Data/PROCESSED/NSE-EOD-ASCII/" + df.iat[i, 0] + ".txt"):
-					df.iloc[[i], [0, 10, 2, 3, 4, 5, 8]].to_csv(
-						"C:/Tradecopy/Data/PROCESSED/NSE-EOD-ASCII/" + df.iat[i, 0] + ".txt", header=False, index=False)
-				else:
-					df.iloc[[i], [0, 10, 2, 3, 4, 5, 8]].to_csv(
-						"C:/Tradecopy/Data/PROCESSED/NSE-EOD-ASCII/" + df.iat[i, 0] + ".txt", mode="a", header=False,
-						index=False)
+		dateFVal = False
+		dateTVal = False
+		validDates = False
+		rejected = False
+		while not validDates:
+			rejected = False
+			while not dateFVal:
+				dateFrom = input("Input the date from: ")
+				try:
+					dateF = datetime.datetime.strptime(dateFrom, form)
+					dateFVal = True
+				except ValueError:
+					print("Date is in the incorrect format, use the format: dd/mm/yyyy")
 
-	elif choice == "3":
+			while not dateTVal:
+				dateTo = input("Input the date to: ")
+				try:
+					dateT = datetime.datetime.strptime(dateTo, form)
+					dateTVal = True
+				except ValueError:
+					print("Date is in the incorrect format, use the format: dd/mm/yyyy")
+
+			if dateT >= dateF:
+				validDates = True
+			else:
+				print("The dateTo value is before the dateFrom value, hence invalid dates")
+				dateFVal = False
+				dateTVal = False
+				validDates = False
+				rejected = True
+
+			if dateF > datetime.datetime(2010, 1, 1) and validDates:
+				validDates = True
+			else:
+				if not rejected:
+					print("At least one of your date values are before 2010, pick more recent dates")
+				dateFVal = False
+				dateTVal = False
+				validDates = False
+				rejected = True
+
+			if dateF < datetime.datetime.now() and dateT < datetime.datetime.now() and validDates:
+				validDates = True
+			else:
+				if not rejected:
+					print("At least one of your date values are after the current date, pick historical dates")
+				dateFVal = False
+				dateTVal = False
+				validDates = False
+				rejected = True
+
 		paths = []
 		for root, dirs, files in os.walk("C:/Tradecopy/Data/RAW/NSE-EOD/"):
 			for file in files:
@@ -151,22 +180,101 @@ while True:
 		paths.sort(key=lambda x: x[1])
 		for filepath in paths:
 			single_date = datetime.datetime.strptime(filepath[0][37:46], "%d%b%Y")
-			if os.path.exists("C:/Tradecopy/Data/PROCESSED/NSE-EOD/NSE_" + single_date.strftime("%Y%m%d") + ".txt"):
-				print("File already exists: " + "NSE_" + single_date.strftime("%Y%m%d") + ".txt")
-			else:
+			if dateF <= single_date <= dateT:
 				print("Processing " + filepath[0])
 				df = pd.read_csv(filepath[0])
+				df = df.drop(df[df.SERIES != "EQ"].index)
 				for i in range(0, len(df.index)):
-					df.iat[i, 10] = single_date.strftime("%Y%m%d")
-					if not os.path.exists(
-							"C:/Tradecopy/Data/PROCESSED/NSE-EOD/NSE_" + single_date.strftime("%Y%m%d") + ".txt"):
+					df.iat[i, 10] = single_date.strftime("%d-%m-%y")
+					if not os.path.exists("C:/Tradecopy/Data/PROCESSED/NSE-EOD-ASCII/" + df.iat[i, 0] + ".txt"):
 						df.iloc[[i], [0, 10, 2, 3, 4, 5, 8]].to_csv(
-							"C:/Tradecopy/Data/PROCESSED/NSE-EOD/NSE_" + single_date.strftime("%Y%m%d") + ".txt",
-							header=False, index=False)
+							"C:/Tradecopy/Data/PROCESSED/NSE-EOD-ASCII/" + df.iat[i, 0] + ".txt", header=False,
+							index=False)
 					else:
 						df.iloc[[i], [0, 10, 2, 3, 4, 5, 8]].to_csv(
-							"C:/Tradecopy/Data/PROCESSED/NSE-EOD/NSE_" + single_date.strftime("%Y%m%d") + ".txt",
-							mode="a", header=False, index=False)
+							"C:/Tradecopy/Data/PROCESSED/NSE-EOD-ASCII/" + df.iat[i, 0] + ".txt", mode="a",
+							header=False,
+							index=False)
+
+	elif choice == "3":
+		dateFVal = False
+		dateTVal = False
+		validDates = False
+		rejected = False
+		while not validDates:
+			rejected = False
+			while not dateFVal:
+				dateFrom = input("Input the date from: ")
+				try:
+					dateF = datetime.datetime.strptime(dateFrom, form)
+					dateFVal = True
+				except ValueError:
+					print("Date is in the incorrect format, use the format: dd/mm/yyyy")
+
+			while not dateTVal:
+				dateTo = input("Input the date to: ")
+				try:
+					dateT = datetime.datetime.strptime(dateTo, form)
+					dateTVal = True
+				except ValueError:
+					print("Date is in the incorrect format, use the format: dd/mm/yyyy")
+
+			if dateT >= dateF:
+				validDates = True
+			else:
+				print("The dateTo value is before the dateFrom value, hence invalid dates")
+				dateFVal = False
+				dateTVal = False
+				validDates = False
+				rejected = True
+
+			if dateF > datetime.datetime(2010, 1, 1) and validDates:
+				validDates = True
+			else:
+				if not rejected:
+					print("At least one of your date values are before 2010, pick more recent dates")
+				dateFVal = False
+				dateTVal = False
+				validDates = False
+				rejected = True
+
+			if dateF < datetime.datetime.now() and dateT < datetime.datetime.now() and validDates:
+				validDates = True
+			else:
+				if not rejected:
+					print("At least one of your date values are after the current date, pick historical dates")
+				dateFVal = False
+				dateTVal = False
+				validDates = False
+				rejected = True
+
+		paths = []
+		for root, dirs, files in os.walk("C:/Tradecopy/Data/RAW/NSE-EOD/"):
+			for file in files:
+				if file.endswith(".csv"):
+					pat = root + "/" + file
+					paths.append([pat, datetime.datetime.strptime(pat[37:46], "%d%b%Y")])
+		paths.sort(key=lambda x: x[1])
+		for filepath in paths:
+			single_date = datetime.datetime.strptime(filepath[0][37:46], "%d%b%Y")
+			if dateF <= single_date <= dateT:
+				if os.path.exists("C:/Tradecopy/Data/PROCESSED/NSE-EOD/NSE_" + single_date.strftime("%Y%m%d") + ".txt"):
+					print("File already exists: " + "NSE_" + single_date.strftime("%Y%m%d") + ".txt")
+				else:
+					print("Processing " + filepath[0])
+					df = pd.read_csv(filepath[0])
+					df = df.drop(df[df.SERIES != "EQ"].index)
+					for i in range(0, len(df.index)):
+						df.iat[i, 10] = single_date.strftime("%Y%m%d")
+						if not os.path.exists(
+								"C:/Tradecopy/Data/PROCESSED/NSE-EOD/NSE_" + single_date.strftime("%Y%m%d") + ".txt"):
+							df.iloc[[i], [0, 10, 2, 3, 4, 5, 8]].to_csv(
+								"C:/Tradecopy/Data/PROCESSED/NSE-EOD/NSE_" + single_date.strftime("%Y%m%d") + ".txt",
+								header=False, index=False)
+						else:
+							df.iloc[[i], [0, 10, 2, 3, 4, 5, 8]].to_csv(
+								"C:/Tradecopy/Data/PROCESSED/NSE-EOD/NSE_" + single_date.strftime("%Y%m%d") + ".txt",
+								mode="a", header=False, index=False)
 
 	elif choice == "4":
 		today = datetime.datetime.now().strftime("%Y-%m-%d")
