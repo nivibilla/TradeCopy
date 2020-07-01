@@ -5,6 +5,9 @@ from pathlib import Path
 from zipfile import ZipFile
 import os
 import pandas as pd
+import yfinance as yf
+yf.pdr_override()
+from pandas_datareader import data as pdr
 
 dateFVal = False
 dateTVal = False
@@ -14,10 +17,13 @@ form = '%d/%m/%Y'
 Path("C:/Tradecopy/Data/RAW/NSE-EOD/").mkdir(parents=True, exist_ok=True)
 Path("C:/Tradecopy/Data/PROCESSED/NSE-EOD/").mkdir(parents=True, exist_ok=True)
 Path("C:/Tradecopy/Data/PROCESSED/NSE-EOD-ASCII/").mkdir(parents=True, exist_ok=True)
+Path("C:/Tradecopy/Data/FOREX/").mkdir(parents=True, exist_ok=True)
+Path("C:/Tradecopy/Data/FTSE/").mkdir(parents=True, exist_ok=True)
 
 while True:
 	choice = input(
-		"type 1 for tradecopy(create data), 2 for tradeASCII(Existing data), 3 for tradecopy(using existing data) or 'quit': ")
+		"type 1 for tradecopy(create data), 2 for tradeASCII(Existing data), 3 for tradecopy(using existing data), "
+		"4 for FTSE data, 5 for FOREX or 'quit': ")
 
 	if choice == "1":
 		while not validDates:
@@ -155,6 +161,43 @@ while True:
 						df.iloc[[i], [0, 10, 2, 3, 4, 5, 8]].to_csv(
 							"C:/Tradecopy/Data/PROCESSED/NSE-EOD/NSE_" + single_date.strftime("%Y%m%d") + ".txt",
 							mode="a", header=False, index=False)
+
+	elif choice == "4":
+		today = datetime.datetime.now().strftime("%Y-%m-%d")
+		tickers = ""
+		f = open("FTSE100.txt", "r")
+		for x in f:
+			if tickers != "":
+				tickers = tickers + " " + x.strip() + ".L"
+			else:
+				tickers = x.strip() + ".L"
+		f.close()
+		# change dates here if needed
+		df = pdr.get_data_yahoo(tickers, start="2018-01-01", end=today, group_by="ticker")
+		f = open("FTSE100.txt", "r")
+		for x in f:
+			ticker = x.strip() + ".L"
+			df[ticker].to_csv("C:/Tradecopy/Data/FTSE/" + ticker + ".csv")
+		f.close()
+
+	elif choice == "5":
+		today = datetime.datetime.now().strftime("%Y-%m-%d")
+		tickers = []
+		tickerforinput = ""
+		f = open("FOREX.txt", "r")
+		for x in f:
+			x = x.replace("/", "")
+			if tickerforinput != "":
+				tickerforinput = tickerforinput + " " + x.strip().split(",")[0]
+				tickers.append([x.strip().split(",")[0], x.strip().split(",")[1]])
+			else:
+				tickerforinput = x.strip().split(",")[0]
+				tickers.append([x.strip().split(",")[0], x.strip().split(",")[1]])
+		f.close()
+		# change dates here if needed
+		df = pdr.get_data_yahoo(tickerforinput, start="2018-01-01", end=today, group_by="ticker")
+		for tick in tickers:
+			df[tick[0]].to_csv("C:/Tradecopy/Data/FOREX/" + tick[1] + ".csv")
 
 	elif choice.upper() == "QUIT":
 		break
