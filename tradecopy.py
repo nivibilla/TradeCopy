@@ -18,8 +18,8 @@ Path("C:/Tradecopy/Data/RAW/NSE-EOD/").mkdir(parents=True, exist_ok=True)
 Path("C:/Tradecopy/Data/PROCESSED/NSE-EOD/").mkdir(parents=True, exist_ok=True)
 Path("C:/Tradecopy/Data/PROCESSED/NSE-EOD-ASCII/").mkdir(parents=True, exist_ok=True)
 Path("C:/Tradecopy/Data/FOREX/").mkdir(parents=True, exist_ok=True)
-Path("C:/Tradecopy/Data/FTSE/").mkdir(parents=True, exist_ok=True)
-Path("C:/Tradecopy/Data/DOW/").mkdir(parents=True, exist_ok=True)
+Path("C:/Tradecopy/Data/RAW/FTSE/").mkdir(parents=True, exist_ok=True)
+Path("C:/Tradecopy/Data/RAW/DOW/").mkdir(parents=True, exist_ok=True)
 
 while True:
 	dateFVal = False
@@ -311,7 +311,7 @@ while True:
 		# change dates here if needed
 		df = pdr.get_data_yahoo(tickerforinput, start="2018-01-01", end=today, group_by="ticker")
 		for tick in tickers:
-			df[tick[0]].to_csv("C:/Tradecopy/Data/FOREX/" + tick[1] + ".csv")
+			df[tick[0]].to_csv("C:/Tradecopy/Data/RAW/FOREX/" + tick[1] + ".csv")
 
 	elif choice == "6":
 		today = datetime.datetime.now().strftime("%Y-%m-%d")
@@ -328,7 +328,7 @@ while True:
 		f = open("DOW.txt", "r")
 		for x in f:
 			ticker = x.strip()
-			df[ticker].to_csv("C:/Tradecopy/Data/DOW/" + ticker + ".csv")
+			df[ticker].to_csv("C:/Tradecopy/Data/RAW/DOW/" + ticker + ".csv")
 		f.close()
 
 	elif choice.upper() == "QUIT":
