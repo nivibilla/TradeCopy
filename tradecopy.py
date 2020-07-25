@@ -17,7 +17,7 @@ form = '%d/%m/%Y'
 Path("C:/Tradecopy/Data/RAW/NSE-EOD/").mkdir(parents=True, exist_ok=True)
 Path("C:/Tradecopy/Data/PROCESSED/NSE-EOD/").mkdir(parents=True, exist_ok=True)
 Path("C:/Tradecopy/Data/PROCESSED/NSE-EOD-ASCII/").mkdir(parents=True, exist_ok=True)
-Path("C:/Tradecopy/Data/FOREX/").mkdir(parents=True, exist_ok=True)
+Path("C:/Tradecopy/Data/RAW/FOREX/").mkdir(parents=True, exist_ok=True)
 Path("C:/Tradecopy/Data/RAW/FTSE/").mkdir(parents=True, exist_ok=True)
 Path("C:/Tradecopy/Data/RAW/DOW/").mkdir(parents=True, exist_ok=True)
 
@@ -291,7 +291,7 @@ while True:
 		f = open("FTSE100.txt", "r")
 		for x in f:
 			ticker = x.strip() + ".L"
-			df[ticker].to_csv("C:/Tradecopy/Data/FTSE/" + ticker + ".csv")
+			df[ticker].to_csv("C:/Tradecopy/Data/RAW/FTSE/" + ticker + ".csv")
 		f.close()
 
 	elif choice == "5":
