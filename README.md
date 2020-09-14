@@ -1,5 +1,6 @@
 # TradeCopy
 Processes NSE EOD data to MetaStock ASCII (7 column) format, using bhavcopy.csv from NSE severs
+Now also gets Forex Data From IG Servers, given you have API Keys
 
 Creates directories C:/TradeCopy/Data/RAW/NSE-EOD and C:/TradeCopy/Data/PROCESSED/NSE-EOD
 
