@@ -185,13 +185,13 @@ while True:
 				df = pd.read_csv(filepath[0])
 				df = df.drop(df[df.SERIES != "EQ"].index)
 				for i in range(0, len(df.index)):
-					df.iat[i, 10] = single_date.strftime("%d-%m-%Y")
+					df.iat[i, 10] = single_date.strftime("%Y-%m-%d 00:00")
 					if not os.path.exists("C:/Tradecopy/Data/PROCESSED/NSE-EOD-ASCII/" + df.iat[i, 0] + ".txt"):
-						df.iloc[[i], [0, 10, 2, 3, 4, 5, 8]].to_csv(
+						df.iloc[[i], [10, 2, 3, 4, 5, 8]].to_csv(
 							"C:/Tradecopy/Data/PROCESSED/NSE-EOD-ASCII/" + df.iat[i, 0] + ".txt", header=False,
 							index=False)
 					else:
-						df.iloc[[i], [0, 10, 2, 3, 4, 5, 8]].to_csv(
+						df.iloc[[i], [10, 2, 3, 4, 5, 8]].to_csv(
 							"C:/Tradecopy/Data/PROCESSED/NSE-EOD-ASCII/" + df.iat[i, 0] + ".txt", mode="a",
 							header=False,
 							index=False)
