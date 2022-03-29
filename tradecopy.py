@@ -89,10 +89,13 @@ while True:
 			year = date_array[2]
 			url = "https://archives.nseindia.com/content/historical/EQUITIES/" + year + "/" + month + "/cm" + day + month + year + "bhav.csv.zip"
 			print(url)
+			s = requests.Session()
+			s.headers.update({"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.61 Safari/537.36"})
+			s.get("https://www.nseindia.com/")
 			filepath = "C:/Tradecopy/Data/RAW/NSE-EOD/" + year + "/cm" + day + month + year + "bhav.csv"
 			if not os.path.exists(filepath):
 				try:
-					response = requests.get(url, stream=True, timeout=3)
+					response = s.get(url)
 					Path("C:/Tradecopy/Data/RAW/NSE-EOD/" + year).mkdir(parents=True, exist_ok=True)
 					with open(filepath + ".zip", "wb") as handle:
 						for data in tqdm(response.iter_content()):
