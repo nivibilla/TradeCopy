@@ -116,7 +116,7 @@ while True:
 							df.iloc[[i], [0, 10, 2, 3, 4, 5, 8]].to_csv(
 								"C:/Tradecopy/Data/PROCESSED/NSE-EOD/NSE_" + single_date.strftime("%Y%m%d") + ".txt",
 								mode="a", header=False, index=False)
-				except requests.exceptions.Timeout, BadZipfile:
+				except (requests.exceptions.Timeout, BadZipfile):
 					print("Url does not exist skipping date: " + day + month + year)
 					continue
 			else:
