@@ -2,7 +2,7 @@ from tqdm import tqdm
 import requests
 import datetime
 from pathlib import Path
-from zipfile import ZipFile
+from zipfile import ZipFile, BadZipfile
 import os
 import pandas as pd
 import yfinance as yf
